@@ -139,6 +139,38 @@
 
     @stack('scripts')
 
+    @php
+        $adminProductSaved = session()->pull('analytics_admin_product_saved');
+    @endphp
+
+    @if ($adminProductSaved)
+        <script>
+            try {
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({
+                    event: 'admin_product_saved',
+                    product_type: @json($adminProductSaved['product_type']),
+                });
+            } catch (error) {}
+        </script>
+    @endif
+
+    @php
+        $groupedProductSaved = session()->pull('analytics_grouped_product_saved');
+    @endphp
+
+    @if ($groupedProductSaved)
+        <script>
+            try {
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({
+                    event: 'grouped_product_saved',
+                    product_type: @json($groupedProductSaved['product_type']),
+                });
+            } catch (error) {}
+        </script>
+    @endif
+
     {!! view_render_event('bagisto.admin.layout.vue-app-mount.before') !!}
 
     <script>

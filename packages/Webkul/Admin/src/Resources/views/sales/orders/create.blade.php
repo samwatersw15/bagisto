@@ -255,6 +255,10 @@
                                 const payload = response.data.data;
 
                                 if (payload && payload.items !== undefined) {
+                                    try {
+                                        window.pushDataLayer('admin_order_item_added');
+                                    } catch (error) {}
+
                                     this.cart = payload;
 
                                     this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });

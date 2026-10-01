@@ -284,6 +284,22 @@
                 }
             },
 
+            mounted() {
+                const form = this.$el.closest('form');
+
+                if (! form) {
+                    return;
+                }
+
+                form.addEventListener('submit', () => {
+                    try {
+                        window.pushDataLayer('booking_product_save_submitted', {
+                            booking_type: this.booking.type,
+                        });
+                    } catch (error) {}
+                });
+            },
+
             created() {
                 const fromRaw = "{{ $bookingProduct && $bookingProduct->available_from ? $bookingProduct->available_from->format('Y-m-d H:i:s') : '' }}";
                 const toRaw = "{{ $bookingProduct && $bookingProduct->available_to ? $bookingProduct->available_to->format('Y-m-d H:i:s') : '' }}";

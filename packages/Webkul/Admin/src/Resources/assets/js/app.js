@@ -7,6 +7,9 @@ import.meta.glob(["../images/**", "../fonts/**"]);
  * Main vue bundler.
  */
 import { createApp } from "vue/dist/vue.esm-bundler";
+import { pushDataLayer } from "../../../../../../src/lib/data-layer";
+
+window.pushDataLayer = pushDataLayer;
 
 /**
  * Main root application registry.
