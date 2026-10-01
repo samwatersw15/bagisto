@@ -158,6 +158,17 @@ class ProductController extends Controller
         Event::dispatch('catalog.product.update.after', $product);
 
         session()->flash('success', trans('admin::app.catalog.products.update-success'));
+        session()->flash('admin_product_saved_analytics_handoff', [
+            'event' => 'admin_product_saved',
+            'product_type' => $product->type,
+        ]);
+
+        if ($product->type === 'grouped') {
+            session()->flash('grouped_product_saved_analytics_handoff', [
+                'event' => 'grouped_product_saved',
+                'product_type' => $product->type,
+            ]);
+        }
 
         return redirect()->route('admin.catalog.products.index');
     }

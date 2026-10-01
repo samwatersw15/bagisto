@@ -258,6 +258,8 @@
                                     this.cart = payload;
 
                                     this.$emitter.emit('add-flash', { type: 'success', message: response.data.message });
+
+                                    window.pushDataLayer?.('admin_order_item_added');
                                 } else {
                                     this.$emitter.emit('add-flash', {
                                         type: 'error',
