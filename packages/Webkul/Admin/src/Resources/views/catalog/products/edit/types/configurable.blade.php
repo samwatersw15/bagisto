@@ -1147,6 +1147,12 @@
                         images: []
                     }, params));
 
+                    try {
+                        window.pushDataLayer('configurable_variant_saved', {
+                            product_type: @json($product->type),
+                        });
+                    } catch (error) {}
+
                     resetForm();
 
                     this.$refs.variantCreateModal.close();

@@ -8,6 +8,9 @@
     <x-admin::form
         method="PUT"
         enctype="multipart/form-data"
+        @if ($product->type === 'booking')
+            @submit="window.pushDataLayer?.('booking_product_save_submitted', $event.booking?.type ? { booking_type: $event.booking.type } : {})"
+        @endif
     >
         {!! view_render_event('bagisto.admin.catalog.product.edit.actions.before', ['product' => $product]) !!}
 

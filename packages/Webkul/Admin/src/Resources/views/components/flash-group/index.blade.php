@@ -1,3 +1,8 @@
+@php
+    $analyticsHandoff = session()->pull('admin_product_saved_analytics_handoff');
+    $groupedProductSavedHandoff = session()->pull('grouped_product_saved_analytics_handoff');
+@endphp
+
 <v-flash-group ref='flashes'></v-flash-group>
 
 @pushOnce('scripts')
@@ -41,6 +46,32 @@
 
                 this.registerGlobalEvents();
             },
+
+            @if (
+                $analyticsHandoff
+                && ($analyticsHandoff['event'] ?? null) === 'admin_product_saved'
+                && session('success') === trans('admin::app.catalog.products.update-success')
+            )
+                mounted() {
+                    try {
+                        window.pushDataLayer('admin_product_saved', {
+                            product_type: @json($analyticsHandoff['product_type'] ?? null),
+                        });
+                    } catch (error) {}
+
+                    @if (
+                        $groupedProductSavedHandoff
+                        && ($groupedProductSavedHandoff['event'] ?? null) === 'grouped_product_saved'
+                        && session('success') === trans('admin::app.catalog.products.update-success')
+                    )
+                        try {
+                            window.pushDataLayer('grouped_product_saved', {
+                                product_type: @json($groupedProductSavedHandoff['product_type'] ?? null),
+                            });
+                        } catch (error) {}
+                    @endif
+                },
+            @endif
 
             methods: {
                 add(flash) {
