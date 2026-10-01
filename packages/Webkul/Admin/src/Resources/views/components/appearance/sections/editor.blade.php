@@ -939,9 +939,25 @@
                         .then(response => {
                             this.active.has_draft = response.data.has_draft;
 
+                            window.pushDataLayer('appearance_section_draft_saved', {
+                                locale_code: this.locale,
+                                has_draft: response.data.has_draft,
+                            });
+
                             this.reloadPreview();
                         })
-                        .catch(error => this.sectionError(error, this.active));
+                        .catch(error => {
+                            try {
+                                window.pushDataLayer(
+                                    'appearance_section_draft_save_failed',
+                                    typeof error.response?.status === 'number'
+                                        ? { http_status: error.response.status }
+                                        : {}
+                                );
+                            } catch {}
+
+                            this.sectionError(error, this.active);
+                        });
                 },
 
                 /**
@@ -1090,13 +1106,35 @@
 
                     return this.$axios.post(this.withLocale(url))
                         .then(response => {
+                            if (url === this.publishUrl) {
+                                window.pushDataLayer?.('appearance_sections_published', {
+                                    locale_code: this.locale,
+                                    ...(Array.isArray(response.data.sections)
+                                        ? { published_section_count: response.data.sections.length }
+                                        : {}),
+                                });
+                            }
+
                             if (Array.isArray(response.data.sections)) {
                                 this.items = response.data.sections;
                             }
 
                             this.reloadPreview();
                         })
-                        .catch(error => this.flashError(error))
+                        .catch(error => {
+                            if (url === this.publishUrl) {
+                                try {
+                                    window.pushDataLayer?.(
+                                        'appearance_sections_publish_failed',
+                                        typeof error.response?.status === 'number'
+                                            ? { http_status: error.response.status }
+                                            : {}
+                                    );
+                                } catch {}
+                            }
+
+                            this.flashError(error);
+                        })
                         .finally(() => this.isBusy = false);
                 },
 

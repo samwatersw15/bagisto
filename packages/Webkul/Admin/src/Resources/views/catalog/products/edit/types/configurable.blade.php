@@ -1147,6 +1147,16 @@
                         images: []
                     }, params));
 
+                    this.$nextTick(() => {
+                        try {
+                            window.dataLayer = window.dataLayer || [];
+                            window.dataLayer.push({
+                                event: 'configurable_variant_saved',
+                                product_type: @json($product->type),
+                            });
+                        } catch (error) {}
+                    });
+
                     resetForm();
 
                     this.$refs.variantCreateModal.close();
